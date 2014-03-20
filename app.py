@@ -42,7 +42,6 @@ def list_todos():
 @cross_origin(origins='*')
 def new_todo():
     todo = json_load(request.data)
-    print "Coming Here"
     todos.save(todo)
     return json_dump(todo)
 

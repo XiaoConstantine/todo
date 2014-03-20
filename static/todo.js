@@ -32,11 +32,6 @@ $(function(){
     clear: function(){
         this.destroy();
     }
-    //url: function(){
-     // return this.order? '/todos/' + this.order: '/todos';
-    //},
-    // Remove this Todo from *localStorage* and delete its view.
-   
   });
 
   // Todo Collection
