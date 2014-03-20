@@ -12,5 +12,6 @@ MongoDB
 Backbone.js  
 
 #Run:
-python app.py
-http://localhost:5000/
+./mongod (run mongodb first)  
+python app.py  
+http://localhost:5000/todos
