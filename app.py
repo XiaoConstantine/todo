@@ -33,11 +33,26 @@ def after_request(data):
 def hello_world():
     return render_template('index.html')
 
+#list all items in mongo
 @app.route('/todos', methods=['GET'])
 @cross_origin(origins='*')
 def list_todos():
     return json_dump(list(todos.find()))
-    
+
+#get specific id item
+@app.route('/todos', methods=['GET'])
+def get_todos(todo_id):
+    objectid = None
+    try:
+        objectid = ObjectId(todo_id)
+    except:
+        return json_dump({"result": "No such id object"})
+    todo = todos.find_one({'_id':objectid})
+    if todo is None:
+        return json_dump({"result": "No such id object" + todo_id}, 404)
+    return json_dump(todo)
+
+#create new item into db
 @app.route('/todos',  methods=['POST'])
 @cross_origin(origins='*')
 def new_todo():
@@ -45,12 +60,13 @@ def new_todo():
     todos.save(todo)
     return json_dump(todo)
 
+#update exist item
 @app.route('/todos/<todo_id>', methods=['PUT'])
 @cross_origin(origins='/todos/*')
 def update_todo(todo_id):
     todos.update({'_id': ObjectId(todo_id)}, {'$set':request.data})
     return json_dump({'result':'OK'})
-
+#delete item
 @app.route('/todos/<todo_id>', methods=['DELETE'])
 @cross_origin(origins='/todos/*')
 def delete_todo(todo_id):
