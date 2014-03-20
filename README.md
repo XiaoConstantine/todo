@@ -3,8 +3,8 @@ todo
 
 Mongo+Flask+Backbone 
 
-A version of Todos app in Backbone tutorial repo.
-Run with a single node MongoDB
+A version of Todos app in Backbone tutorial repo.  
+Which instead of using LocalStorage, using Flask as server side and store information into a single node MongoDB  
 
 #Enviroments:
 Flask  
