@@ -65,8 +65,8 @@ def new_todo():
 @app.route('/todos/<todo_id>', methods=['PUT'])
 @cross_origin(origins='/todos/*')
 def update_todo(todo_id):
-    todo = json_load(request.data)
-    todos.save(todo)
+    data = json_load(request.data)
+    todos.save(data)
  #   todos.update({'_id':ObjectId(todo_id)}, {"$set": data})
     return json_dump({'result':'OK'}), 200
 #delete item
