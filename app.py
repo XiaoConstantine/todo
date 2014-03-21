@@ -1,3 +1,4 @@
+
 import pymongo
 from bson.objectid import ObjectId
 import json_util
@@ -8,8 +9,10 @@ except:
     from flask.ext.cors import cross_origin
 
 app = Flask(__name__)
+app.debug = True
 connection = pymongo.Connection('localhost', 27017)
 todos = connection['demo']['todos']
+
 
 
 def json_load(data):
@@ -23,21 +26,19 @@ def after_request(data):
     response = make_response(data)
     response.headers['Access-Control-Allow-Origin'] = "*"
     response.headers['Access-Control-Allow-Methods'] = "POST, GET, DELETE, UPDATE, PUT, OPTIONS"
-    response.headers['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept"
-    response.headers['Content-Type'] = 'application/json'
     return response
 
 
 @app.route('/')
 @cross_origin(origins='*')
-def hello_world():
-    return render_template('index.html')
+def index():
+    return render_template("index.html")
 
 #list all items in mongo
 @app.route('/todos', methods=['GET'])
 @cross_origin(origins='*')
 def list_todos():
-    return json_dump(list(todos.find()))
+    return json_dump(list(todos.find())), 200
 
 #get specific id item
 @app.route('/todos', methods=['GET'])
@@ -46,11 +47,11 @@ def get_todos(todo_id):
     try:
         objectid = ObjectId(todo_id)
     except:
-        return json_dump({"result": "No such id object"})
+        return json_dump({"result": "invalid id"}), 400
     todo = todos.find_one({'_id':objectid})
     if todo is None:
-        return json_dump({"result": "No such id object" + todo_id}, 404)
-    return json_dump(todo)
+        return json_dump({"result": "No such id object" + todo_id}), 404
+    return json_dump(todo), 200
 
 #create new item into db
 @app.route('/todos',  methods=['POST'])
@@ -58,24 +59,26 @@ def get_todos(todo_id):
 def new_todo():
     todo = json_load(request.data)
     todos.save(todo)
-    return json_dump(todo)
+    return json_dump(todo), 200
 
 #update exist item
 @app.route('/todos/<todo_id>', methods=['PUT'])
 @cross_origin(origins='/todos/*')
 def update_todo(todo_id):
-    todos.update({'_id': ObjectId(todo_id)}, {'$set':request.data})
-    return json_dump({'result':'OK'})
+    todo = json_load(request.data)
+    todos.save(todo)
+ #   todos.update({'_id':ObjectId(todo_id)}, {"$set": data})
+    return json_dump({'result':'OK'}), 200
 #delete item
 @app.route('/todos/<todo_id>', methods=['DELETE'])
 @cross_origin(origins='/todos/*')
 def delete_todo(todo_id):
     todos.remove(ObjectId(todo_id))
-    return json_dump({'result':'OK'})
+    return json_dump({'result':'OK'}), 200
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 
 

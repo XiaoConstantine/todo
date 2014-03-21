@@ -113,7 +113,7 @@ $(function(){
       var content = this.model.get('content');
       this.$('.todo-content').text(content);
       this.input = this.$('.todo-input');
-      this.input.bind('blur', this.close);
+      this.input.bind('blur', _.bind(this.close, this));
       this.input.val(content);
     },
 
@@ -125,7 +125,9 @@ $(function(){
     // Switch this view into `"editing"` mode, displaying the input field.
     edit: function() {
       $(this.el).addClass("editing");
+      this.setContent();
       this.input.focus();
+
     },
 
     // Close the `"editing"` mode, saving changes to the todo.
