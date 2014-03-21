@@ -1,4 +1,3 @@
-
 import pymongo
 from bson.objectid import ObjectId
 import json_util
@@ -12,7 +11,6 @@ app = Flask(__name__)
 app.debug = True
 connection = pymongo.Connection('localhost', 27017)
 todos = connection['demo']['todos']
-
 
 
 def json_load(data):
@@ -67,8 +65,8 @@ def new_todo():
 def update_todo(todo_id):
     data = json_load(request.data)
     todos.save(data)
- #   todos.update({'_id':ObjectId(todo_id)}, {"$set": data})
     return json_dump({'result':'OK'}), 200
+
 #delete item
 @app.route('/todos/<todo_id>', methods=['DELETE'])
 @cross_origin(origins='/todos/*')
